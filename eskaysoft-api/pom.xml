@@ -129,7 +129,7 @@
 							<outputDirectory>${project.build.directory}/classes/resources/</outputDirectory>
 							<resources>
 								<resource>
-									<directory>${project.parent.basedir}/eskaysoft-web/src/main/web/dist/np-app/</directory>
+									<directory>${project.parent.basedir}/eskaysoft-web/src/main/web/dist/eskaysoft/</directory>
 								</resource>
 							</resources>
 						</configuration>
