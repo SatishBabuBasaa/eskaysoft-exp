@@ -66,7 +66,7 @@
 			<artifactId>antlr</artifactId>
 		</dependency>
 		<!-- below are newly added. -->
-		<dependency>
+			<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-integration</artifactId>
 		</dependency>
@@ -76,12 +76,12 @@
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
 
-		<dependency>
+	<!--<dependency>
 			<groupId>com.eskaysoft</groupId>
 			<artifactId>eskaysoft-web</artifactId>
 			<version>${project.version}</version>
 			<scope>runtime</scope>
-		</dependency>
+		</dependency>-->
 
 
 	</dependencies>
@@ -92,7 +92,7 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
-			<plugin>
+			<!--<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-failsafe-plugin</artifactId>
 			</plugin>
@@ -109,7 +109,7 @@
 					<packagingExcludes>WEB-INF/lib/eskaysoft-*.jar</packagingExcludes>
 					<warName>eskaysoft-app</warName>
 				</configuration>
-			</plugin>
+			</plugin>-->
 
 		</plugins>
 	</build>
