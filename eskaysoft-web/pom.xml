@@ -54,8 +54,8 @@
 				</configuration>
 			</execution>
 
-			<!--<execution>
-				<id>prod</id>
+			<execution>
+				<!--<id>prod</id>-->
 				<goals>
 					<goal>npm</goal>
 				</goals>
@@ -63,7 +63,7 @@
 					<arguments>run-script build</arguments>
 				</configuration>
 				<phase>generate-resources</phase>
-			</execution>-->
+			</execution>
 
 		</executions>
 			</plugin>
