@@ -14,14 +14,15 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "area",uniqueConstraints = { @UniqueConstraint(columnNames = {"businessExecutiveId"})})
+@Table(name = "area", uniqueConstraints = {
+@UniqueConstraint(columnNames = {"businessExecutiveId"})})
 public class Area implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long areaId;
+	private Long id;
 
 	@ManyToOne(fetch = FetchType.EAGER, optional = false)
 	@JoinColumn(name = "businessExecutiveId", nullable = false)
@@ -30,12 +31,13 @@ public class Area implements Serializable {
 	@Column(name = "areaName", nullable = false, length = 20)
 	private String areaName;
 
-	public Long getAreaId() {
-		return this.areaId;
+
+	public Long getId() {
+		return this.id;
 	}
 
-	public void setAreaId(Long areaId) {
-		this.areaId = areaId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public BusinessExecutive getBusinessExecutiveId() {

@@ -1,8 +1,11 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 import { TranslateService } from '@ngx-translate/core';
 import { MasterService } from '../master.service';
 import '../../../../assets/styles/mainstyles.scss';
+import { ConfirmationModelDialogComponent } from '../../../commonComponents/confirmation-model-dialog/confirmation-model-dialog.component';
+import { ButtonsComponent } from '../../../commonComponents/buttons/buttons.component';
 
 @Component({
   selector: 'app-company-group',
@@ -10,120 +13,131 @@ import '../../../../assets/styles/mainstyles.scss';
 })
 export class CompanyGroupComponent implements OnInit {
 
-    public companyGroupForm: FormGroup;
-    private endPoint: string = "companygroup/";
-    public gridDataList: any = [];
-    public gridColumnNamesList;
-    public gridSelectedRow;
-    public formSuccess: boolean = false;
-    public formRequiredError: boolean = false;
-    public formServerError: boolean = false;
-    public nameFlag;
-    public deleteFlag: boolean =true;
-    public saveBtnFlag: boolean =false;
+  public companyGroupForm: FormGroup;
+  private endPoint: string = "companygroup/";
+  public gridDataList: any = [];
+  public gridColumnNamesList;
+  public gridSelectedRow;
+  public formSuccess: boolean = false;
+  public formRequiredError: boolean = false;
+  public formServerError: boolean = false;
+  public nameFlag;
+  public deleteFlag: boolean = true;
+  public companyGrp;
+  private duplicateCompanyGrp: boolean = false;
+  public duplicateMessage: string = null;
+  public duplicateMessageParam: string = null;
+  modalRef: BsModalRef;
+  message: string;
+  private formTitle: string = "Company Group";
+  private deleteConfirmMsg: string = "companygroup.deleteConfirmationMessage";
+  private saveConfirmMsg: string = "companygroup.saveConfirmationMessage";
+  private saveInfoMsg: string = "companygroup.saveInformationMessage";
+  private deleteInfoMsg: string = "companygroup.deleteInformationMessage";
 
-    @ViewChild('focus') focusField: ElementRef;
+  @ViewChild(ButtonsComponent) buttonsComponent: ButtonsComponent;
+  @ViewChild('focus') focusField: ElementRef;
 
-    constructor(private fb: FormBuilder, private translate: TranslateService, private masterService: MasterService) {
+  constructor(private fb: FormBuilder,
+    private translate: TranslateService,
+    private masterService: MasterService) {
       translate.setDefaultLang('messages.en');
-    }
+  }
 
-    ngOnInit() {
-      this.companyGroupForm = this.fb.group({
-        id: [],
-        companyGroup: ['', Validators.required]
-      });
-      this.loadGridData();
-      this.getGridCloumsList();
-      this.focusField.nativeElement.focus();
-    }
+  ngOnInit() {
+    this.companyGroupForm = this.fb.group({
+      id: [],
+      companyGroup: ['', Validators.required]
+    });
+    //this.loadGridData();
+    this.getGridCloumsList();
+    this.focusField.nativeElement.focus();
+  }
 
-    valueChange(selectedRow: any[]): void {
-      this.editable(selectedRow);
-    }
+  valueChange(selectedRow: any[]): void {
+    this.editable(selectedRow);
+  }
 
-    getGridCloumsList() {
-      this.masterService.getLocalJsonData().subscribe(data => {
-        data as object[];
-        this.gridColumnNamesList = data["CompanyGroupColumns"];
-      });
+  onInitialDataLoad(dataList: any[]) {
+    this.gridDataList = dataList;
+  }
+  getDuplicateErrorMessages(): void {
+    this.duplicateMessage = null;
+    this.formRequiredError = false;
+    this.duplicateMessageParam = null;
+    if (this.duplicateCompanyGrp) {
+      this.duplicateMessage = "companygroup.duplicateNameErrorMessage";
+      this.duplicateMessageParam = this.companyGroupForm.value.companyGroup;
     }
+  }
 
-    loadGridData() {
-      this.masterService.getData(this.endPoint);
-      this.masterService.dataObject.subscribe(list => {
-        this.gridDataList = list;
-        localStorage.setItem('rowDataLength', JSON.stringify(this.gridDataList.length));
-      });
+  checkForDuplicateCompanyGrp() {
+    if (!this.nameFlag) {
+      this.duplicateCompanyGrp = this.masterService.hasDataExist(this.gridDataList, 'companyGroup', this.companyGroupForm.value.companyGroup);
+      this.getDuplicateErrorMessages();
     }
+  }
 
-    save() {
-      if (this.companyGroupForm.valid) {
-        if (confirm('Are you sure!!')) {
-          if (this.companyGroupForm.value.id) {
-            this.masterService.updateRecord(this.endPoint, this.companyGroupForm.value).subscribe(res => {
-              this.successMsg();
-            }, (error) => {
-              this.serverErrMsg();
-            });
-          } else {
-            this.masterService.createRecord(this.endPoint, this.companyGroupForm.value).subscribe(res => {
-              this.successMsg();
-            }, (error) => {
-              this.serverErrMsg();
-            });
-          }
-        }
-      } else {
-        this.requiredErrMsg()
-      }
-    }
+  getGridCloumsList() {
+    this.masterService.getLocalJsonData().subscribe(data => {
+      data as object[];
+      this.gridColumnNamesList = data["CompanyGroupColumns"];
+    });
+  }
 
-    delete() {
-      if (confirm('Are you sure!!')) {
-        this.masterService.deleteRecord(this.endPoint, this.gridSelectedRow.id).subscribe(res => {
-          localStorage.removeItem('ag-activeRow');
-          this.successMsg()
-        }, (error) => {
-          this.serverErrMsg();
-        });
-      }
-    }
+  loadGridData() {
+    this.masterService.getData(this.endPoint);
+    this.masterService.dataObject.subscribe(list => {
+      this.gridDataList = list;
+      localStorage.setItem('rowDataLength', JSON.stringify(this.gridDataList.length));
+    });
+  }
 
-    successMsg() {
-      this.formSuccess = true;
-      this.formRequiredError = this.formServerError = false;
-      this.resetForm();
-    }
+  save() {
+    this.buttonsComponent.save();
+  }
 
-    requiredErrMsg() {
+  delete() {
+    this.buttonsComponent.delete();
+  }
+
+  successMsg() {
+    this.formSuccess = true;
+    this.formRequiredError = this.formServerError = false;
+    this.resetForm();
+  }
+
+  requiredErrMsg() {
+    if (this.duplicateMessage == null) {
       this.formRequiredError = true;
       this.formSuccess = this.formServerError = false;
     }
+  }
 
-    serverErrMsg() {
-      this.formServerError = true;
-      this.formRequiredError = this.formSuccess = false;
-    }
+  serverErrMsg() {
+    this.formServerError = true;
+    this.formRequiredError = this.formSuccess = false;
+  }
 
-    resetForm() {
-      this.companyGroupForm.reset();
-      this.gridSelectedRow = null;
-      this.nameFlag = false;
-      this.deleteFlag = true;
-      this.saveBtnFlag = false;
+  resetForm() {
+    this.companyGroupForm.reset();
+    this.gridSelectedRow = null;
+    this.nameFlag = false;
+    this.deleteFlag = true;
+    this.formRequiredError = this.formServerError = this.formSuccess = false;
+    this.loadGridData();
+    this.focusField.nativeElement.focus();
+  }
 
-      this.formRequiredError = this.formServerError = this.formSuccess = false;
-      this.loadGridData();
-      this.focusField.nativeElement.focus();
-    }
+  editable(s) {
+    this.gridSelectedRow = s;
+    this.companyGroupForm.reset(s);
+    this.nameFlag = true;
+    this.deleteFlag = false;
+    this.formRequiredError = false;
+    this.duplicateMessage = null;
+    this.deleteFlag = !this.gridSelectedRow.deleteFlag;
+  }
 
-    editable(s) {
-      this.gridSelectedRow = s;
-      this.companyGroupForm.reset(s);
-      this.nameFlag = true;
-      this.deleteFlag = false;
-        this.saveBtnFlag = this.deleteFlag = !this.gridSelectedRow.deleteFlag;
-    }
 
 }

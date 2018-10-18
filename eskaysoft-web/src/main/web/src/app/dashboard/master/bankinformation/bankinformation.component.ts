@@ -1,8 +1,12 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 import { TranslateService } from '@ngx-translate/core';
 import { MasterService } from '../master.service';
 import '../../../../assets/styles/mainstyles.scss';
+import { ConfirmationModelDialogComponent } from '../../../commonComponents/confirmation-model-dialog/confirmation-model-dialog.component';
+import { ButtonsComponent } from '../../../commonComponents/buttons/buttons.component';
+
 
 @Component({
   selector: 'app-bankinformation',
@@ -19,10 +23,25 @@ export class BankinformationComponent implements OnInit {
   public formRequiredError: boolean = false;
   public formServerError: boolean = false;
   public nameFlag;
-  public deleteFlag: boolean =true;
-  @ViewChild('focus') focusField: ElementRef;
+  public deleteFlag: boolean = true;
+  public bankName;
+  private duplicateBankName: boolean = false;
+  public duplicateMessage: string = null;
+  public duplicateMessageParam: string = null;
+  modalRef: BsModalRef;
+  message: string;
+  private formTitle: string = "Bank Information";
+  private deleteConfirmMsg: string = "bankinfo.deleteConfirmationMessage";
+  private saveConfirmMsg: string = "bankinfo.saveConfirmationMessage";
+  private saveInfoMsg: string = "bankinfo.saveInformationMessage";
+  private deleteInfoMsg: string = "bankinfo.deleteInformationMessage";
 
-  constructor(private fb: FormBuilder, private translate: TranslateService, private masterService: MasterService) {
+  @ViewChild('focus') focusField: ElementRef;
+  @ViewChild(ButtonsComponent) buttonsComponent: ButtonsComponent;
+
+  constructor(private fb: FormBuilder,
+    private translate: TranslateService,
+    private masterService: MasterService) {
     translate.setDefaultLang('messages.en');
   }
 
@@ -32,13 +51,34 @@ export class BankinformationComponent implements OnInit {
       name: ['', Validators.required],
       address: ['', Validators.required]
     });
-    this.loadGridData();
+    //this.loadGridData();
     this.getGridCloumsList();
     this.focusField.nativeElement.focus();
   }
 
+  onInitialDataLoad(dataList: any[]) {
+    this.gridDataList = dataList;
+  }
+
   valueChange(selectedRow: any[]): void {
     this.editable(selectedRow);
+  }
+
+  getDuplicateErrorMessages(): void {
+    this.duplicateMessage = null;
+    this.duplicateMessageParam = null;
+    this.formRequiredError = false;
+    if (this.duplicateBankName) {
+      this.duplicateMessage = "bankinfo.duplicateNameErrorMessage";
+      this.duplicateMessageParam = this.bankInformationForm.value.name;
+    }
+  }
+
+  checkForDuplicateBankName() {
+    if (!this.nameFlag) {
+      this.duplicateBankName = this.masterService.hasDataExist(this.gridDataList, 'name', this.bankInformationForm.value.name);
+      this.getDuplicateErrorMessages();
+    }
   }
 
   getGridCloumsList() {
@@ -57,38 +97,13 @@ export class BankinformationComponent implements OnInit {
   }
 
   save() {
-    if (this.bankInformationForm.valid) {
-      if (confirm('Are you sure!!')) {
-        if (this.bankInformationForm.value.id) {
-          this.masterService.updateRecord(this.endPoint, this.bankInformationForm.value).subscribe(res => {
-            this.successMsg();
-          }, (error) => {
-            this.serverErrMsg();
-          });
-        } else {
-          this.masterService.createRecord(this.endPoint, this.bankInformationForm.value).subscribe(res => {
-            this.successMsg();
-          }, (error) => {
-            this.serverErrMsg();
-          });
-        }
-      }
-    } else {
-      this.requiredErrMsg()
-    }
+    this.buttonsComponent.save();
   }
 
   delete() {
-    if (confirm('Are you sure!!')) {
-      this.masterService.deleteRecord(this.endPoint, this.gridSelectedRow.id).subscribe(res => {
-        localStorage.removeItem('ag-activeRow');
-        this.successMsg()
-      }, (error) => {
-        this.serverErrMsg();
-      });
-    }
+    this.buttonsComponent.delete();
   }
-
+  
   successMsg() {
     this.formSuccess = true;
     this.formRequiredError = this.formServerError = false;
@@ -96,8 +111,10 @@ export class BankinformationComponent implements OnInit {
   }
 
   requiredErrMsg() {
-    this.formRequiredError = true;
-    this.formSuccess = this.formServerError = false;
+    if (this.duplicateMessage == null) {
+      this.formRequiredError = true;
+      this.formSuccess = this.formServerError = false;
+    }
   }
 
   serverErrMsg() {
@@ -108,6 +125,7 @@ export class BankinformationComponent implements OnInit {
   resetForm() {
     this.bankInformationForm.reset();
     this.gridSelectedRow = null;
+    this.duplicateMessage = null;
     this.nameFlag = false;
     this.formRequiredError = this.formServerError = this.formSuccess = false;
     this.loadGridData();
@@ -118,6 +136,8 @@ export class BankinformationComponent implements OnInit {
   editable(s) {
     this.gridSelectedRow = s;
     this.bankInformationForm.reset(s);
+    this.formRequiredError = false;
+    this.duplicateMessage = null;
     this.nameFlag = true;
     this.deleteFlag = false;
   }

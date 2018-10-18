@@ -2,47 +2,41 @@
     <div class="row">
       <div class="col-md-5">
         <h3>States </h3>
-        <form [formGroup]="statesForm" (ngSubmit)="saveState()" autocomplete="off">
-          <div class="row">
-            <div class="error-text col-xs-12" *ngIf="formSuccess">
-              <p class="text-success">{{'message.save' | translate }}</p>
-            </div>
-            <div class="error-text col-xs-12" *ngIf="formRequiredError">
-              <p class="text-danger">{{'message.mandatory' | translate }}</p>
-            </div>
-            <div class="error-text col-xs-12" *ngIf="formServerError">
-              <p class="text-danger">{{'message.error' | translate }}</p>
-            </div>
-            <div class="error-text col-xs-12" *ngIf="isduplicate">
-              <p class="text-danger">Duplicate Record Exists.</p>
-            </div>
-          </div>
+        <form [formGroup]="statesForm" autocomplete="off">
+          <app-errormessages [formRequiredError]="formRequiredError" [formSuccess]="formSuccess"
+          [formServerError]="formServerError" [duplicateMessage]="duplicateMessage"
+           [duplicateMessageParam]="duplicateMessageParam"></app-errormessages>
 
             <div class="input-group">
               <p>State Name: *</p>
-              <input id="stateName" #focus [readonly]="nameFlag" class="form-control" [formControl]="statesForm.controls['stateName']">
+              <input id="stateName" #focus [readonly]="nameFlag" (blur)="checkForDuplicateStateName()" class="form-control" [formControl]="statesForm.controls['stateName']">
           </div>
           <div class="input-group">
               <p>Code: *</p>
-              <input id="stateCode" class="form-control" [formControl]="statesForm.controls['stateCode']">
+              <input id="stateCode" [readonly]="duplicateStateName" (blur)="checkForDuplicateStateCode()" class="form-control" [formControl]="statesForm.controls['stateCode']">
             </div>
-            <div class="input-group">
-                <p>Zone: *</p>
-                <input id="zone"  class="form-control" [formControl]="statesForm.controls['zone']">
-              </div>
-
+            
               <div class="input-group">
-                <button type="button" (click)="resetForm()" class="btn btn-primary">{{'button.reset' | translate }}</button>
-                <button type="submit" [disabled]="saveBtnFlag" class="btn btn-primary mr-l-10">{{'button.save' | translate }}</button>
-                <button type="button" [disabled]="deleteFlag" (click)="showConfirmationModal('Delete')" class="btn btn-danger float-right">{{'button.delete' | translate }}</button>
-              </div>
+                  <p>Zone: *</p>
+                 <input id="zone" formControlName="zone" [typeahead]="stateZone" typeaheadOptionField="description"
+                [typeaheadOptionsLimit]="7" [typeaheadMinLength]="0"   class="form-control">
+                  <span class="caret"></span>
+            </div>
+
+              <app-buttons [title]="formTitle" [deleteConfirmMsg]="deleteConfirmMsg"
+                           [saveConfirmMsg]="saveConfirmMsg" [saveInfoMsg]="saveInfoMsg" [endPoint]="endPoint"
+                           [deleteInfoMsg]="deleteInfoMsg" [duplicateMessage]="duplicateMessage"
+                           [isBtnDeleteDisable]="deleteFlag" [hideSaveBtn]=true
+                           [hideDeleteBtn]=true [formObj]="statesForm" (saveRecord)="save()"
+                           (deleteRecord)="delete()" (displayErrorMessages)="requiredErrMsg()"
+                           (afterSuccess)="successMsg()" (resetForm)="resetForm()" (serverErrMsg)="serverErrMsg()" ></app-buttons>
         </form>
       </div>
 
       <div class="col-md-7">
         <br /><br />
 
-        <app-synectiks-common-grid [gridDataList]="statesList" (valueChange)='valueChange($event)' [gridColumnList]="statesListColumns"></app-synectiks-common-grid>
+        <app-synectiks-common-grid [endPoint]="endPoint" (intialLoad)='onInitialDataLoad($event)' [gridDataList]="statesList" (valueChange)='valueChange($event)' [gridColumnList]="statesListColumns"></app-synectiks-common-grid>
       </div>
 
     </div>

@@ -1,1 +1,203 @@
-product works
+<div class="col-md-12 mr-b-2"  >
+    <div class="row">
+        <div class="col-md-5">
+            <h3>Product</h3>
+            <form [formGroup]="productForm" (ngSubmit)="saveForm()" autocomplete="off">
+                <app-errormessages [formRequiredError]="formRequiredError" [formSuccess]="formSuccess"
+                    [formServerError]="formServerError" [duplicateMessage]="duplicateMessage" [duplicateMessageParam]="duplicateMessageParam"></app-errormessages>
+
+
+                <div class="col-md-6 col-lt">
+                    <p>Name: *</p>
+                    <input id="name" #focus [readonly]="nameFlag" class="form-control" [formControl]="productForm.controls['name']">
+                </div>
+
+
+                <!--<div class="col-md-3 col-lt">
+                    <p>Strip Pack: *</p>
+                    <input id="id" class="form-control" [formControl]="productForm.controls['id']">
+                </div>-->
+
+                <!-- <div class="col-md-6 col-lt input-group ">
+
+                    <input id="address" type="text" class="form-control" [formControl]="userProfileForm.controls['address']"
+                      placeholder="Address">
+                      <span class="input-group-addon"><i class="glyphicon glyphicon-home"></i></span>
+                  </div> -->
+
+                <div class="col-md-6 col-lt">
+                    <p>Company: * &emsp; (<a style="cursor: pointer"  (click)="openModal(cmpTemplate)">create</a>)</p>
+
+                    <input id="companyCode" formControlName="companyCode" [typeahead]="typeaheadCompanyDataList" typeaheadOptionField="companyCode"
+                    [typeaheadOptionsLimit]="7" [typeaheadMinLength]="0" (typeaheadOnSelect)="loadSelectedCompanyTypeahead($event)" class="form-control">
+                     <span class="caret"></span>
+
+                  </div>
+
+                <div class="col-md-6 col-lt">
+                    <p>Product Group: * &emsp; (<a style="cursor: pointer" (click)="openModal(template)">create </a>)</p>
+                    <input id="productGroupName" formControlName="productGroupName" [typeahead]="typeaheadGroupDataList"
+                        typeaheadOptionField="productGroupName" [typeaheadOptionsLimit]="7" [typeaheadMinLength]="0"
+                        (typeaheadOnSelect)="loadSelectedGroupTypeahead($event)" class="form-control">
+                    <span class="caret"></span>
+                </div>
+
+                <div class="col-md-6 col-lt">
+                    <p>Product Category: * &emsp; (<a style="cursor: pointer" (click)="openModal(pcTemplate)">create </a>)</p>
+                    <input id="productCategoryName" formControlName="productCategoryName" [typeahead]="typeaheadCategoryDataList"
+                        typeaheadOptionField="productCategoryName" [typeaheadOptionsLimit]="7" [typeaheadMinLength]="0"
+                        (typeaheadOnSelect)="loadSelectedCategoryTypeahead($event)" class="form-control">
+                    <span class="caret"></span>
+                </div>
+
+                <div class="col-md-3 col-lt">
+                    <p>Packing: *</p>
+                    <input id="packing" class="form-control" [formControl]="productForm.controls['packing']">
+                </div>
+
+                <div class="col-md-3 col-lt">
+                    <p>Box Qty: *</p>
+                    <input id="boxQty" #focus [readonly]="nameFlag" class="form-control" [formControl]="productForm.controls['boxQty']">
+                </div>
+
+                <div class="col-md-3 col-lt">
+                    <p>Case Qty: *</p>
+                    <input id="caseQty" class="form-control" [formControl]="productForm.controls['caseQty']">
+                </div>
+ <div class="col-md-3 col-lt">
+                    <p>Content: *</p>
+                    <input id="contents" #focus [readonly]="nameFlag" class="form-control" [formControl]="productForm.controls['contents']">
+                </div>
+
+
+
+                <div class="col-md-3 col-lt">
+                    <p>Scheme Qty: *</p>
+                    <input id="schemeQty" #focus [readonly]="nameFlag" class="form-control" [formControl]="productForm.controls['schemeQty']">
+                </div>
+
+                <div class="col-md-3 col-lt">
+                    <p>Net Rate: *</p>
+                    <input id="netRate" class="form-control" [formControl]="productForm.controls['netRate']">
+                </div>
+
+
+
+
+                <div class="col-md-6 col-lt">
+                    <p>Is Net Rate Item: *</p>
+                    <input id="isNetRateItem" #focus [readonly]="nameFlag" class="form-control" [formControl]="productForm.controls['isNetRateItem']">
+                </div>
+
+
+                <div class="col-md-3 col-lt">
+                    <p>Free: *</p>
+                    <input id="free" #focus [readonly]="nameFlag" class="form-control" [formControl]="productForm.controls['free']">
+                </div>
+
+                <div class="col-md-3 col-lt">
+                    <p>Tax: *</p>
+                    <input id="tax" #focus [readonly]="nameFlag" class="form-control" [formControl]="productForm.controls['tax']">
+                </div>
+
+                <div class="col-md-6 col-lt">
+                    <p>Product Code: *</p>
+                    <input id="code"  class="form-control" [formControl]="productForm.controls['code']">
+                </div>
+
+
+                <div class="input-group">
+                    <button type="button" (click)="resetForm()" class="btn btn-primary">{{'button.reset' | translate }}</button>
+                    <button type="submit" class="btn btn-primary mr-l-10">{{'button.save' | translate }}</button>
+                    <button type="button" [disabled]="deleteFlag" (click)="showConfirmationModal('Delete')" class="btn btn-danger float-right">{{'button.delete'
+                        | translate }}</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-md-7">
+            <br /><br />
+            <app-synectiks-common-grid [endPoint]="endPoint" (intialLoad)='onInitialDataLoad($event)' [gridDataList]="scheduleList"
+            (valueChange)='valueChange($event)' [gridColumnList]="gridColumnNamesList"></app-synectiks-common-grid>
+</div>
+
+    </div>
+
+</div>
+<!-- Product Group Modal -->
+<ng-template #template>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">Create Product Group </h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="productGroupForm" (ngSubmit)="saveChildForm()" autocomplete="off">
+            <app-errormessages [formRequiredError]="scFormRequiredError" [formSuccess]="formSuccess" [formServerError]="scFormServerError"
+                [duplicateMessage]="childDuplicateMessage" [duplicateMessageParam]="childDuplicateMessageParam"></app-errormessages>
+
+            <div class="input-group">
+                <p>Product Group: *</p>
+                <input id="productGroupName" #focus (blur)="checkForDuplicateProdGroup()" class="form-control" [formControl]="productGroupForm.controls['productGroupName']">
+            </div>
+
+            <div class="input-group">
+                <button type="button" (click)="resetChildForm()" class="btn btn-primary">{{'button.reset' | translate }}</button>
+                <button type="submit" class="btn btn-primary mr-l-10">{{'button.save' | translate }}</button>
+            </div>
+        </form>
+    </div>
+</ng-template>
+<!-- Product Category Modal -->
+<ng-template #pcTemplate>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">Create Product Category </h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="productCategoryForm" (ngSubmit)="saveChildPCForm()" autocomplete="off">
+            <app-errormessages [formRequiredError]="scFormRequiredError" [formSuccess]="formSuccess" [formServerError]="scFormServerError"
+                [duplicateMessage]="childDuplicateMessage" [duplicateMessageParam]="childDuplicateMessageParam"></app-errormessages>
+
+            <div class="input-group">
+                <p>Product Category: *</p>
+                <input id="productCategoryName" #focus (blur)="checkForDuplicateProdCategory()" class="form-control" [formControl]="productCategoryForm.controls['productCategoryName']">
+            </div>
+
+            <div class="input-group">
+                <button type="button" (click)="resetChildForm()" class="btn btn-primary">{{'button.reset' | translate }}</button>
+                <button type="submit" class="btn btn-primary mr-l-10">{{'button.save' | translate }}</button>
+            </div>
+        </form>
+    </div>
+</ng-template>
+
+<!-- Company Modal -->
+<ng-template #cmpTemplate>
+    <div class="modal-header">
+        <h4 class="modal-title pull-left">Create Company </h4>
+        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="companyForm" (ngSubmit)="saveChildCmpForm()" autocomplete="off">
+            <app-errormessages [formRequiredError]="scFormRequiredError" [formSuccess]="formSuccess" [formServerError]="scFormServerError"
+                [duplicateMessage]="childDuplicateMessage" [duplicateMessageParam]="childDuplicateMessageParam"></app-errormessages>
+
+            <div class="input-group">
+                <p>Company: *</p>
+                <input id="companyCode" #focus (blur)="checkForDuplicateCompanyCode()" class="form-control" [formControl]="companyForm.controls['companyCode']">
+            </div>
+
+            <div class="input-group">
+                <button type="button" (click)="resetChildForm()" class="btn btn-primary">{{'button.reset' | translate }}</button>
+                <button type="submit" class="btn btn-primary mr-l-10">{{'button.save' | translate }}</button>
+            </div>
+        </form>
+    </div>
+</ng-template>
+

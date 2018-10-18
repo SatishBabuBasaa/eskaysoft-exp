@@ -4,9 +4,7 @@ import { CommonModule } from '@angular/common';
 import { ScheduleComponent } from './schedule/schedule.component';
 import { NgForm, NgModel, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SubscheduleComponent } from './subschedule/subschedule.component';
-import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { AgGridModule } from 'ag-grid-angular';
-import { BsDropdownModule } from 'ngx-bootstrap';
 import { ModalModule } from 'ngx-bootstrap/modal';
 
 import {TranslateModule, TranslateLoader} from '@ngx-translate/core';
@@ -15,6 +13,8 @@ import {HttpClientModule, HttpClient} from '@angular/common/http';
 
 import { SynectiksCommonGridComponent } from '../../commonComponents/synectiks-common-grid/synectiks-common-grid.component';
 import { ConfirmationModelDialogComponent } from '../../commonComponents/confirmation-model-dialog/confirmation-model-dialog.component';
+import { ErrormessagesComponent } from '../../commonComponents/errormessages/errormessages.component';
+import { ButtonsComponent } from '../../commonComponents/buttons/buttons.component';
 
 import { StatesComponent } from './states/states.component';
 import { DistrictsComponent } from './districts/districts.component';
@@ -32,6 +32,8 @@ import { AccountsOpeningsComponent } from './accounts-openings/accounts-openings
 import { ContactComponent } from './contact/contact.component';
 import { CustomerwiseDiscountComponent } from './customerwise-discount/customerwise-discount.component';
 import { PurchaseComponent } from './purchase/purchase.component';
+import { BsDropdownModule, TypeaheadModule, TabsModule  } from 'ngx-bootstrap';
+
 
 @NgModule({
   imports: [
@@ -40,7 +42,9 @@ import { PurchaseComponent } from './purchase/purchase.component';
     ReactiveFormsModule,
     TypeaheadModule,
     AgGridModule,
-    BsDropdownModule,
+    BsDropdownModule.forRoot(),
+    TypeaheadModule.forRoot(),
+    TabsModule.forRoot(), 
     FormsModule,
     ModalModule.forRoot(),
     HttpClientModule,
@@ -56,7 +60,7 @@ import { PurchaseComponent } from './purchase/purchase.component';
     NgModel,
     FormsModule
   ],
-  declarations: [ScheduleComponent, SubscheduleComponent, ConfirmationModelDialogComponent, SynectiksCommonGridComponent, StatesComponent, DistrictsComponent, AreasComponent, BusinessexecutivesComponent, BankinformationComponent, ManufacturerComponent, CompanyGroupComponent, CompaniesComponent, ProductGroupComponent, ProductCategoryComponent, ProductComponent, AccountsInfoComponent, AccountsOpeningsComponent, ContactComponent, CustomerwiseDiscountComponent, PurchaseComponent],
+  declarations: [ScheduleComponent, SubscheduleComponent, ButtonsComponent, ConfirmationModelDialogComponent, ErrormessagesComponent, SynectiksCommonGridComponent, StatesComponent, DistrictsComponent, AreasComponent, BusinessexecutivesComponent, BankinformationComponent, ManufacturerComponent, CompanyGroupComponent, CompaniesComponent, ProductGroupComponent, ProductCategoryComponent, ProductComponent, AccountsInfoComponent, AccountsOpeningsComponent, ContactComponent, CustomerwiseDiscountComponent, PurchaseComponent],
   entryComponents: [ ConfirmationModelDialogComponent ]
 })
 export class MasterModule { }

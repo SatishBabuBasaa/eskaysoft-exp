@@ -4,13 +4,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
 @RestController
-@RequestMapping("/home")
+@RequestMapping("/home1")
 public class HomeController {
 	
-	@GetMapping
+	@GetMapping("test123")
 	public String home() {
-		System.out.println("************************");
+		System.out.println("*******123*****************");
 		return "forward:/index.html";
 	}
 

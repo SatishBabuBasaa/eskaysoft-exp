@@ -11,16 +11,22 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "companies")
+@Table(name = "companies", uniqueConstraints = {
+@UniqueConstraint(columnNames = {"companyCode"}),
+@UniqueConstraint(columnNames = {"companyName"}),
+@UniqueConstraint(columnNames = {"companyStatus"}),
+@UniqueConstraint(columnNames = {"companyGroupId"}),
+@UniqueConstraint(columnNames = {"companyType"})})
 public class Company implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long companyId;
+	private Long id;
 	
 	 @Column(name = "companyCode", nullable = false, length = 20)
 	private String companyCode;
@@ -45,6 +51,14 @@ public class Company implements Serializable {
 	private CompanyGroup companyGroupId;	
 
 	
+	public Long getId() {
+		return this.id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	public String getCompanyCode() {
 		return this.companyCode;
 	}
@@ -101,15 +115,5 @@ public class Company implements Serializable {
 		this.companyType = companyType;
 	}
 
-	public Long getCompanyId() {
-		return companyId;
-	}
-
-	public void setCompanyId(Long companyId) {
-		this.companyId = companyId;
-	}
-
-	
-	
 	
 }

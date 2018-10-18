@@ -1,8 +1,7 @@
+<div class="container-fluid">
 <div class="dashboard-navbar">
-
-
   <div class="row">
-    <div class="col-sm-3">
+    <div class="col-sm-3 mw-25">
       <div class="col-sm-6">
         <div class="btn-group" dropdown #dropdown1="bs-dropdown" [autoClose]="false">
           <button id="buttonMaster" dropdownToggle type="button" class="btn btn-primary dropdown-toggle" aria-controls="dropdown-basic"  (mouseenter) ="dropdown1.isOpen=true"  (mouseleave) ="dropdown1.isOpen=false">
@@ -20,9 +19,9 @@
             <li role="menuitem"><a class="dropdown-item" [routerLink]="['companyGroup']">Company Group</a></li>
             <li role="menuitem"><a class="dropdown-item" [routerLink]="['companies']">Companies</a></li>
             <li role="menuitem"><a class="dropdown-item" [routerLink]="['accountsOpenings']">Accounts Openings</a></li>
+            <li role="menuitem"><a class="dropdown-item" [routerLink]="['accountsInformation']">Accounts Information</a></li>
             <li role="menuitem"><a class="dropdown-item" [routerLink]="['contact']">Contacts</a></li>
             <li role="menuitem"><a class="dropdown-item" [routerLink]="['customerDiscount']">Customerwise Discount</a></li>
-            <li role="menuitem"><a class="dropdown-item" [routerLink]="['purchase']">Purchase</a></li>
             <li role="menuitem"><a class="dropdown-item" [routerLink]="['product']">Product</a></li>
             <li role="menuitem"><a class="dropdown-item" [routerLink]="['productCategory']">Product Category</a></li>
             <li role="menuitem"><a class="dropdown-item" [routerLink]="['productGroup']">Product Group</a></li>
@@ -35,13 +34,14 @@
             Purchase
           </button>
           <ul (mouseenter) ="dropdown2.isOpen=true"  (mouseleave) ="dropdown2.isOpen=false" id="dropdownMaster" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-basic">
+              <li role="menuitem"><a class="dropdown-item" [routerLink]="['purchase']">Purchase</a></li>
             <li role="menuitem"><a class="dropdown-item" [routerLink]="['schedule']">Action</a></li>
             <li role="menuitem"><a class="dropdown-item" [routerLink]="['schedule']">Another action</a></li>
           </ul>
         </div>
       </div>
     </div>
-    <div class="col-sm-3">
+    <div class="col-sm-3 mw-25">
       <div class="col-sm-6">
         <div class="btn-group" dropdown  #dropdown3="bs-dropdown" [autoClose]="false">
           <button id="buttonMaster" dropdownToggle type="button" class="btn btn-primary dropdown-toggle" aria-controls="dropdown-basic"  (mouseenter) ="dropdown3.isOpen=true"  (mouseleave) ="dropdown3.isOpen=false">
@@ -65,7 +65,7 @@
         </div>
       </div>
     </div>
-    <div class="col-sm-3">
+    <div class="col-sm-3 ir-btn">
       <div class="col-sm-6">
         <div class="btn-group" dropdown  #dropdown5="bs-dropdown" [autoClose]="false">
           <button id="buttonMaster" dropdownToggle type="button" class="btn btn-primary dropdown-toggle" aria-controls="dropdown-basic"  (mouseenter) ="dropdown5.isOpen=true"  (mouseleave) ="dropdown5.isOpen=false">
@@ -92,7 +92,7 @@
     <div class="col-sm-3">
       <div class="col-sm-6">
         <div class="btn-group" dropdown  #dropdown7="bs-dropdown" [autoClose]="false">
-          <button id="buttonMaster" dropdownToggle type="button" class="btn btn-primary dropdown-toggle" aria-controls="dropdown-basic"  (mouseenter) ="dropdown7.isOpen=true"  (mouseleave) ="dropdown7.isOpen=false">
+          <button id="buttonMaster" dropdownToggle type="button" class="btn btn-primary dropdown-toggle btn-misc" aria-controls="dropdown-basic"  (mouseenter) ="dropdown7.isOpen=true"  (mouseleave) ="dropdown7.isOpen=false">
             GST Reports
           </button>
           <ul (mouseenter) ="dropdown7.isOpen=true"  (mouseleave) ="dropdown7.isOpen=false" id="dropdownMaster" *dropdownMenu class="dropdown-menu" role="menu" aria-labelledby="button-basic">
@@ -102,7 +102,7 @@
         </div>
       </div>
       <div class="col-sm-6">
-        <div class="btn-group" dropdown  #dropdown8="bs-dropdown" [autoClose]="false">
+        <div class="btn-group ir-btn" dropdown  #dropdown8="bs-dropdown" [autoClose]="false">
           <button id="buttonMaster" dropdownToggle type="button" class="btn btn-primary dropdown-toggle" aria-controls="dropdown-basic"  (mouseenter) ="dropdown8.isOpen=true"  (mouseleave) ="dropdown8.isOpen=false">
             Miscellaneous
           </button>
@@ -115,4 +115,4 @@
     </div>
   </div>
 </div>
- 
+ </div>

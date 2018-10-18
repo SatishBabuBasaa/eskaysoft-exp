@@ -2,22 +2,14 @@
     <div class="row">
       <div class="col-md-5">
         <h3>Areas</h3>
-        <form [formGroup]="areaForm" (ngSubmit)="save()" autocomplete="off">
-          <div class="row">
-            <div class="error-text col-xs-12" *ngIf="formSuccess">
-              <p class="text-success">{{'message.save' | translate }}</p>
-            </div>
-            <div class="error-text col-xs-12" *ngIf="formRequiredError">
-              <p class="text-danger">{{'message.mandatory' | translate }}</p>
-            </div>
-            <div class="error-text col-xs-12" *ngIf="formServerError">
-              <p class="text-danger">{{'message.error' | translate }}</p>
-            </div>
-          </div>
+        <form [formGroup]="areaForm" (ngSubmit)="saveForm()" autocomplete="off">
+          <app-errormessages [formRequiredError]="formRequiredError" [formSuccess]="formSuccess"
+          [formServerError]="formServerError" [duplicateMessage]="duplicateMessage"
+           [duplicateMessageParam]="duplicateMessageParam"></app-errormessages>
 
           <div class="input-group">
             <p>Area Name: *</p>
-            <input id="areaName" #focus [readonly]="nameFlag"  class="form-control" [formControl]="areaForm.controls['areaName']">
+            <input id="areaName" #focus [readonly]="nameFlag" (blur)="validateFormOnBlur()"  class="form-control" [formControl]="areaForm.controls['areaName']">
           </div>
 
           <div class="input-group">
@@ -30,14 +22,14 @@
               <div class="input-group">
                 <button type="button" (click)="resetForm()" class="btn btn-primary">{{'button.reset' | translate }}</button>
                 <button type="submit" class="btn btn-primary mr-l-10">{{'button.save' | translate }}</button>
-                <button type="button" [disabled]="deleteFlag" (click)="delete()" class="btn btn-danger float-right">{{'button.delete' | translate }}</button>
+                <button type="button" [disabled]="deleteFlag" (click)="showConfirmationModal('Delete')" class="btn btn-danger float-right">{{'button.delete' | translate }}</button>
               </div>
         </form>
       </div>
 
       <div class="col-md-7">
         <br /><br />
-        <app-synectiks-common-grid [gridDataList]="gridDataList" (valueChange)='valueChange($event)' [gridColumnList]="gridColumnNamesList"></app-synectiks-common-grid>
+        <app-synectiks-common-grid [endPoint]="areaEndPoint" (intialLoad)='onInitialDataLoad($event)'  [gridDataList]="gridDataList" (valueChange)='valueChange($event)' [gridColumnList]="gridColumnNamesList"></app-synectiks-common-grid>
       </div>
     </div>
   </div>
@@ -52,21 +44,13 @@
     <div class="modal-body">
       <form [formGroup]="businessExecutiveForm" (ngSubmit)="saveBusinessExecutive()" autocomplete="off">
 
-        <div class="row">
-          <div class="error-text col-xs-12" *ngIf="formSuccess">
-            <p class="text-success">{{'message.save' | translate }}</p>
-          </div>
-          <div class="error-text col-xs-12" *ngIf="formRequiredError">
-            <p class="text-danger">{{'message.mandatory' | translate }}</p>
-          </div>
-          <div class="error-text col-xs-12" *ngIf="formServerError">
-            <p class="text-danger">{{'message.error' | translate }}</p>
-          </div>
-        </div>
+        <app-errormessages [formRequiredError]="scFormRequiredError" [formSuccess]="formSuccess"
+        [formServerError]="scFormServerError" [duplicateMessage]="childDuplicateMessage"
+         [duplicateMessageParam]="childDuplicateMessageParam"></app-errormessages>
 
         <div class="input-group">
         	<p>Name: *</p>
-        	<input id="name" class="form-control" [formControl]="businessExecutiveForm.controls['name']">
+        	<input id="name" class="form-control" (blur) = "checkForDuplicateBusiExecName()" [formControl]="businessExecutiveForm.controls['name']">
         </div>
 
         <div class="input-group">

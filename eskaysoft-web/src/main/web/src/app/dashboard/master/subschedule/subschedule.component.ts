@@ -26,6 +26,8 @@ export class SubscheduleComponent implements OnInit {
   public scFormSuccess: boolean = false;
   public nameFlag;
   subScheduleList: any = [];
+  public childDuplicateMessage: string = null;
+  public childDuplicateMessageParam: string = null;
   scheduleList: any = [];
   editSubSchedule: any;
   public selectedSchedule: any;
@@ -35,7 +37,9 @@ export class SubscheduleComponent implements OnInit {
   public deleteFlag: boolean = true;
   public subScheduleListColumns;
   private duplicateSchName: boolean = false;
+  private duplicateSubSchName: boolean = false;
   private duplicateSchIndex: boolean = false;
+
   public duplicateMessage: string = null;
   public duplicateMessageParam: string = null;
   @ViewChild('focus') focusField: ElementRef;
@@ -48,7 +52,9 @@ export class SubscheduleComponent implements OnInit {
   valueChange(selectedRow: any[]): void {
     this.editable(selectedRow);
   }
-
+  onInitialDataLoad(dataList:any[]){
+    this.subScheduleList = dataList;
+  }
   ngOnInit() {
     this.scheduleForm = this.fb.group({
       id: [],
@@ -64,7 +70,7 @@ export class SubscheduleComponent implements OnInit {
       scheduleId: [],
       scheduleName: []
     });
-    this.loadGriddata();
+    //this.loadGriddata();
     this.loadScheduleData();
     this.focusField.nativeElement.focus();
     this.getScheduleTypes();
@@ -106,7 +112,7 @@ export class SubscheduleComponent implements OnInit {
   }
 
   saveSchedule() {
-    if (this.scheduleForm.valid && this.duplicateMessage == null) {
+    if (this.scheduleForm.valid && this.childDuplicateMessage == null) {
       this.showConfirmationModal("SaveSchedule");
     } else {
       this.scRequiredErrMsg();
@@ -115,7 +121,6 @@ export class SubscheduleComponent implements OnInit {
 
   saveScheduleForm() {
     this.masterService.createRecord("schedules/", this.scheduleForm.value).subscribe(res => {
-
       this.showInformationModal("SaveSchedule");
       this.modalRef.hide();
       this.scheduleForm.reset();
@@ -123,10 +128,21 @@ export class SubscheduleComponent implements OnInit {
       this.scServerErrMsg();
     });
   }
+
   resetScheduleForm() {
+    this.scFormRequiredError = false;
+    this.childDuplicateMessage = null;
+    this.childDuplicateMessageParam = null;
     this.scheduleForm.reset();
   }
 
+   checkForDuplicateSubScheduleName() {
+     if(!this.nameFlag){
+       this.duplicateSubSchName = this.masterService.hasDataExist(this.subScheduleList, 'subScheduleName', this.subScheduleForm.value.subScheduleName);
+       this.getDuplicateErrorMessages();
+     }
+
+  }
   checkForDuplicateScheduleName() {
     this.duplicateSchName = this.masterService.hasDataExist(this.scheduleList, 'scheduleName', this.scheduleForm.value.scheduleName);
     this.getDuplicateErrorMessages();
@@ -139,18 +155,27 @@ export class SubscheduleComponent implements OnInit {
   }
 
   getDuplicateErrorMessages(): void {
+      this.duplicateMessageParam = null;
     this.duplicateMessage = null;
-    this.duplicateMessageParam = null;
-    if (this.duplicateSchName && this.duplicateSchIndex) {
-      this.duplicateMessage = "schedule.duplicateErrorMessage";
+    this.childDuplicateMessage = null;
+    this.childDuplicateMessageParam = null;
+	this.formRequiredError = false;
+  this.scFormRequiredError= false;
 
-    } else if (this.duplicateSchIndex) {
-      this.duplicateMessage = "schedule.duplicateIndexErrorMessage";
-      this.duplicateMessageParam = this.scheduleForm.value.scheduleIndex;
+    if (this.duplicateSubSchName) {
+     this.duplicateMessage = "subschedule.duplicateNameErrorMessage";
+     this.duplicateMessageParam = this.subScheduleForm.value.subScheduleName;
+   }
+    if (this.duplicateSchName && this.duplicateSchIndex) {
+      this.childDuplicateMessage = "schedule.duplicateErrorMessage";
+
+    }  else if (this.duplicateSchIndex) {
+      this.childDuplicateMessage = "schedule.duplicateIndexErrorMessage";
+      this.childDuplicateMessageParam = this.scheduleForm.value.scheduleIndex;
 
     } else if (this.duplicateSchName) {
-      this.duplicateMessage = "schedule.duplicateNameErrorMessage";
-      this.duplicateMessageParam = this.scheduleForm.value.scheduleName;
+      this.childDuplicateMessage = "schedule.duplicateNameErrorMessage";
+      this.childDuplicateMessageParam = this.scheduleForm.value.scheduleName;
     }
   }
 
@@ -173,7 +198,7 @@ export class SubscheduleComponent implements OnInit {
 
   save() {
     this.formRequiredError = false;
-    if (this.subScheduleForm.valid && this.selectedSchedule && this.selectedSchedule.id) {
+    if (this.subScheduleForm.valid && this.selectedSchedule && this.selectedSchedule.id && this.duplicateMessage == null) {
       this.showConfirmationModal('Save');
     } else {
       this.requiredErrMsg();
@@ -196,8 +221,10 @@ export class SubscheduleComponent implements OnInit {
   }
 
   requiredErrMsg() {
-    this.formRequiredError = true;
-    this.formSuccess = this.formServerError = false;
+	  if (this.duplicateMessage == null) {
+		this.formRequiredError = true;
+		this.formSuccess = this.formServerError = false;
+	  }
   }
 
   serverErrMsg() {
@@ -206,7 +233,7 @@ export class SubscheduleComponent implements OnInit {
   }
 
   scRequiredErrMsg() {
-    if (this.duplicateMessage == null) {
+    if (this.childDuplicateMessage == null) {
       this.scFormRequiredError = true;
       this.scFormSuccess = this.scFormServerError = false;
     }
@@ -222,17 +249,27 @@ export class SubscheduleComponent implements OnInit {
     this.loadScheduleData();
     this.formRequiredError = this.formServerError = this.formSuccess = false;
     this.subScheduleForm.reset();
+    this.scFormRequiredError= false;
     this.editSubSchedule = null;
     this.nameFlag = false;
     this.deleteFlag = true;
     this.duplicateMessage = null;
+    this.childDuplicateMessage = null;
     this.duplicateMessageParam = null;
+    this.childDuplicateMessage = null;
+    this.childDuplicateMessageParam = null;
+	this.duplicateSchIndex = false;
+	this.duplicateSchName = false;
+	this.duplicateSubSchName = false;
     this.focusField.nativeElement.focus();
   }
 
   editable(s) {
     this.nameFlag = true;
     this.editSubSchedule = s;
+    this.formRequiredError = false;
+    this.duplicateMessage = null;
+    this.childDuplicateMessage = null;
     this.selectedSchedule = {};
     this.selectedSchedule.id = s.scheduleId;
     this.deleteFlag = false;
